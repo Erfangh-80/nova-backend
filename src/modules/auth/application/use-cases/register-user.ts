@@ -4,9 +4,7 @@ import type {
     UserRepository,
 } from "../ports/user.repository.js";
 
-import {
-    emailAlreadyExistsError,
-} from "../../domain/errors/auth.errors.js";
+import { emailAlreadyExistsError } from "../../domain/errors/auth.errors.js";
 
 export interface RegisterUserInput {
     email: string;
@@ -37,14 +35,21 @@ export function createRegisterUserUseCase(
 
             const passwordHash = await passwordHasher.hash(input.password);
 
-            const user = await users.create({
+            const result = await users.create({
                 email,
                 passwordHash,
             });
 
+            if (!result.success) {
+                return {
+                    success: false,
+                    error: emailAlreadyExistsError(),
+                };
+            }
+
             return {
                 success: true,
-                user,
+                user: result.user,
             };
         },
     };

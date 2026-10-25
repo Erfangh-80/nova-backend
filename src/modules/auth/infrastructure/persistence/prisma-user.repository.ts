@@ -1,8 +1,9 @@
 import type { PrismaClient } from "../../../../generated/prisma/client.js";
 import { Prisma } from "../../../../generated/prisma/client.js";
+
 import type {
     CreateUserData,
-    PublicUser,
+    CreateUserResult,
     UserRepository,
 } from "../../application/ports/user.repository.js";
 
@@ -19,9 +20,9 @@ export function createPrismaUserRepository(
             return user !== null;
         },
 
-        async create(data: CreateUserData): Promise<PublicUser> {
+        async create(data: CreateUserData): Promise<CreateUserResult> {
             try {
-                return await prisma.user.create({
+                const user = await prisma.user.create({
                     data: {
                         email: data.email,
                         password: data.passwordHash,
@@ -32,12 +33,17 @@ export function createPrismaUserRepository(
                         createdAt: true,
                     },
                 });
+
+                return { success: true, user };
             } catch (error) {
                 if (
                     error instanceof Prisma.PrismaClientKnownRequestError &&
                     error.code === "P2002"
                 ) {
-                    throw new Error("EMAIL_ALREADY_EXISTS");
+                    return {
+                        success: false,
+                        reason: "EMAIL_ALREADY_EXISTS",
+                    };
                 }
 
                 throw error;

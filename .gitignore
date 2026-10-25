@@ -1,5 +1,8 @@
 node_modules/
 dist/
-.env
 coverage/
 /src/generated/prisma
+
+.env
+.env.*
+!.env.example
