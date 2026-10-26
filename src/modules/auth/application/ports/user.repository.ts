@@ -14,4 +14,5 @@ export type CreateUserResult =
 export interface UserRepository {
     existsByEmail(email: string): Promise<boolean>;
     create(data: CreateUserData): Promise<CreateUserResult>;
+    findByEmail(email: string): Promise<User | null>;
 }

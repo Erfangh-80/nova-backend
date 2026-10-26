@@ -49,5 +49,29 @@ export function createPrismaUserRepository(
                 throw error;
             }
         },
+        async findByEmail(email) {
+            const user = await prisma.user.findUnique({
+                where: { email },
+                select: {
+                    id: true,
+                    email: true,
+                    password: true,
+                    createdAt: true,
+                    updatedAt: true,
+                },
+            });
+
+            if (!user) {
+                return null;
+            }
+
+            return {
+                id: user.id,
+                email: user.email,
+                passwordHash: user.password,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+            };
+        },
     };
 }

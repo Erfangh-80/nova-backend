@@ -88,10 +88,12 @@ describe("PrismaUserRepository", () => {
     it("returns true when the email exists", async () => {
         const email = createTestEmail();
 
-        await repository.create({
+        const result = await repository.create({
             email,
             passwordHash: "$argon2id$test-hash",
         });
+
+        expect(result.success).toBe(true);
 
         await expect(repository.existsByEmail(email)).resolves.toBe(true);
     });
@@ -113,5 +115,32 @@ describe("PrismaUserRepository", () => {
             success: false,
             reason: "EMAIL_ALREADY_EXISTS",
         });
+    });
+
+    it("finds a user by email and returns the password hash", async () => {
+        const email = createTestEmail();
+        const passwordHash = "$argon2id$test-hash";
+
+        const created = await repository.create({
+            email,
+            passwordHash,
+        });
+
+        expect(created.success).toBe(true);
+
+        const user = await repository.findByEmail(email);
+
+        expect(user).toMatchObject({
+            email,
+            passwordHash,
+        });
+    });
+
+    it("returns null when the user is not found by email", async () => {
+        const email = createTestEmail();
+
+        const user = await repository.findByEmail(email);
+
+        expect(user).toBeNull();
     });
 });
