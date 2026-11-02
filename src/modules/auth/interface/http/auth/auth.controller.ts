@@ -1,21 +1,21 @@
 import type { Request, Response, NextFunction } from "express";
 
-import { createRegisterUserUseCase } from "../../application/use-cases/register-user.js";
-import { createLoginUserUseCase } from "../../application/use-cases/login-user.js";
+import { createRegisterUserUseCase } from "../../../application/use-cases/register-user.js";
+import { createLoginUserUseCase } from "../../../application/use-cases/login-user.js";
 
-import { createPrismaUserRepository } from "../../infrastructure/persistence/prisma-user.repository.js";
-import { createPrismaRefreshSessionRepository } from "../../infrastructure/persistence/prisma-refresh-session.repository.js";
-import { argon2PasswordHasher } from "../../infrastructure/security/argon2-password-hasher.js";
+import { createPrismaUserRepository } from "../../../infrastructure/persistence/prisma-user.repository.js";
+import { createPrismaRefreshSessionRepository } from "../../../infrastructure/persistence/prisma-refresh-session.repository.js";
+import { argon2PasswordHasher } from "../../../infrastructure/security/argon2-password-hasher.js";
 
 import {
     createAccessToken,
     createRefreshToken,
     createRefreshTokenExpiry,
     hashRefreshToken,
-} from "../../infrastructure/security/auth-tokens.js";
+} from "../../../infrastructure/security/auth-tokens.js";
 
 import { loginSchema, registerSchema } from "./auth.schemas.js";
-import { prisma } from "../../../../config/prisma/prisma.js";
+import { prisma } from "../../../../../config/prisma/prisma.js";
 
 const users = createPrismaUserRepository(prisma);
 const sessions = createPrismaRefreshSessionRepository(prisma);

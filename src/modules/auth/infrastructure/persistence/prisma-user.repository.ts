@@ -6,6 +6,7 @@ import type {
     CreateUserResult,
     UserRepository,
 } from "../../application/ports/user.repository.js";
+import type { User } from "../../domain/entities/user.entity.js";
 
 export function createPrismaUserRepository(
     prisma: PrismaClient,
@@ -73,5 +74,22 @@ export function createPrismaUserRepository(
                 updatedAt: user.updatedAt,
             };
         },
+        async findById(id: string): Promise<User | null> {
+            const user = await prisma.user.findUnique({
+                where: { id },
+            });
+
+            if (!user) {
+                return null;
+            }
+
+            return {
+                id: user.id,
+                email: user.email,
+                passwordHash: user.password,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+            };
+        }
     };
 }

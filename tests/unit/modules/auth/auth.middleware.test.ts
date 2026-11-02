@@ -2,7 +2,7 @@ import express from "express";
 import request from "supertest";
 import jwt from "jsonwebtoken";
 import { describe, expect, it } from "vitest";
-import { authMiddleware } from "../../../../src/modules/auth/interface/http/auth.middleware";
+import { authMiddleware } from "../../../../src/modules/auth/interface/http/auth/auth.middleware";
 
 const app = express();
 
