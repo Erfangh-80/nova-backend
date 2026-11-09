@@ -6,6 +6,7 @@ import { authMiddleware } from "../../../../auth/interface/http/auth/auth.middle
 
 import { createGetCurrentUser } from "../../../application/use-cases/get-current-user.js";
 import { createUserController } from "./user.controller.js";
+import { createUpdateProfile } from "../../../application/use-cases/update-profile.js";
 
 const router = Router();
 
@@ -13,8 +14,11 @@ const userRepository = createPrismaUserRepository(prisma);
 
 const getCurrentUser = createGetCurrentUser(userRepository);
 
-const userController = createUserController(getCurrentUser);
+const updateProfile = createUpdateProfile(userRepository);
+
+const userController = createUserController(getCurrentUser, updateProfile);
 
 router.get("/me", authMiddleware, userController.me);
+router.patch("/me", authMiddleware, userController.updateProfile);
 
 export { router as userRoutes };
